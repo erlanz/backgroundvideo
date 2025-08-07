@@ -19,7 +19,7 @@ public class BackgroundVideo {
 
     public void playVideo(String path) {
         if (activity == null) {
-            Logger.error("BackgroundVideo", "Activity is null");
+            Logger.error("BackgroundVideo", "Activity is null", new Exception("Activity is null"));
             return;
         }
 
@@ -81,7 +81,7 @@ public class BackgroundVideo {
                 });
                 
             } catch (Exception e) {
-                Logger.error("BackgroundVideo", "Error playing video: " + e.getMessage());
+                Logger.error("BackgroundVideo", "Error playing video: " + e.getMessage(), e);
             }
         });
     }
@@ -124,7 +124,7 @@ public class BackgroundVideo {
                     // This may not work on all devices
                     // Better to use ExoPlayer for more precise control
                 } catch (Exception e) {
-                    Logger.error("BackgroundVideo", "Error setting volume: " + e.getMessage());
+                    Logger.error("BackgroundVideo", "Error setting volume: " + e.getMessage(), e);
                 }
             });
         }
