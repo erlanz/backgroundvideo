@@ -4,6 +4,33 @@ var capacitorBackgroundVideo = (function (exports, core) {
     const BackgroundVideo = core.registerPlugin('BackgroundVideo', {
         web: () => Promise.resolve().then(function () { return web; }).then((m) => new m.BackgroundVideoWeb()),
     });
+    // Enhanced wrapper that handles assets path transformation
+    class BackgroundVideoWrapper {
+        constructor() {
+            this.plugin = BackgroundVideo;
+        }
+        async playVideo(options) {
+            let { path } = options;
+            // Transform assets/ paths to HTTP URLs for Capacitor web server
+            if (path.startsWith('assets/')) {
+                const origin = window.location.origin;
+                path = `${origin}/${path}`;
+            }
+            return this.plugin.playVideo({ path });
+        }
+        async pauseVideo() {
+            return this.plugin.pauseVideo();
+        }
+        async resumeVideo() {
+            return this.plugin.resumeVideo();
+        }
+        async stopVideo() {
+            return this.plugin.stopVideo();
+        }
+        async setVolume(options) {
+            return this.plugin.setVolume(options);
+        }
+    }
 
     class BackgroundVideoWeb extends core.WebPlugin {
         constructor() {
@@ -12,6 +39,13 @@ var capacitorBackgroundVideo = (function (exports, core) {
         }
         async playVideo(options) {
             console.log('BackgroundVideo: playVideo', options);
+            let { path } = options;
+            // Transform assets/ paths to HTTP URLs for consistency with native
+            if (path.startsWith('assets/')) {
+                const origin = window.location.origin;
+                path = `${origin}/${path}`;
+                console.log('BackgroundVideo: Transformed assets path to:', path);
+            }
             // Создаем видео элемент если его нет
             if (!this.videoElement) {
                 this.videoElement = document.createElement('video');
@@ -26,7 +60,7 @@ var capacitorBackgroundVideo = (function (exports, core) {
                 this.videoElement.muted = true;
                 document.body.appendChild(this.videoElement);
             }
-            this.videoElement.src = options.path;
+            this.videoElement.src = path;
             await this.videoElement.play();
         }
         async pauseVideo() {
@@ -62,7 +96,7 @@ var capacitorBackgroundVideo = (function (exports, core) {
         BackgroundVideoWeb: BackgroundVideoWeb
     });
 
-    exports.BackgroundVideo = BackgroundVideo;
+    exports.BackgroundVideo = BackgroundVideoWrapper;
 
     return exports;
 

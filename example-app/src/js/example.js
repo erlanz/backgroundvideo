@@ -3,12 +3,47 @@ import { BackgroundVideo } from 'backgroundvideo';
 // Глобальные функции для демонстрации плагина
 window.startBackgroundVideo = async () => {
     try {
-        // Для демонстрации используем тестовое видео
-        // В реальном приложении укажите путь к вашему видеофайлу
+        // Example 1: Using assets path (will be transformed to HTTP URL)
+        await BackgroundVideo.playVideo({ 
+            path: 'assets/video/intro.mp4' 
+        });
+        console.log('Фоновое видео запущено из assets');
+    } catch (error) {
+        console.error('Ошибка запуска видео:', error);
+    }
+};
+
+window.startRemoteVideo = async () => {
+    try {
+        // Example 2: Using remote HTTP URL
         await BackgroundVideo.playVideo({ 
             path: 'https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4' 
         });
-        console.log('Фоновое видео запущено');
+        console.log('Фоновое видео запущено с удаленного URL');
+    } catch (error) {
+        console.error('Ошибка запуска видео:', error);
+    }
+};
+
+window.startBundleVideo = async () => {
+    try {
+        // Example 3: Using bundle resource (iOS) or raw resource (Android)
+        await BackgroundVideo.playVideo({ 
+            path: 'intro' // Will resolve to bundle/raw resource
+        });
+        console.log('Фоновое видео запущено из bundle ресурсов');
+    } catch (error) {
+        console.error('Ошибка запуска видео:', error);
+    }
+};
+
+window.startLocalVideo = async () => {
+    try {
+        // Example 4: Using local filesystem path
+        await BackgroundVideo.playVideo({ 
+            path: '/path/to/local/video.mp4' 
+        });
+        console.log('Фоновое видео запущено с локального пути');
     } catch (error) {
         console.error('Ошибка запуска видео:', error);
     }

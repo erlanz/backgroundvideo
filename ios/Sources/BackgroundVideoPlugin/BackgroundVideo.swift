@@ -12,11 +12,28 @@ import UIKit
             return
         }
         
-        // Создаем URL для видео файла
+        // Three-branch URL resolution logic
         let url: URL
-        if path.hasPrefix("http") {
-            url = URL(string: path)!
+        
+        if path.hasPrefix("http://") || path.hasPrefix("https://") {
+            // Remote/hosted URL
+            guard let remoteUrl = URL(string: path) else {
+                print("BackgroundVideo: Invalid remote URL: \(path)")
+                return
+            }
+            url = remoteUrl
+        } else if path.contains("/") == false || path.hasSuffix(".mp4") || path.hasSuffix(".mov") || path.hasSuffix(".m4v") {
+            // Bare resource name - resolve to bundle
+            let fileName = (path as NSString).deletingPathExtension
+            let fileExtension = (path as NSString).pathExtension.isEmpty ? "mp4" : (path as NSString).pathExtension
+            
+            guard let bundleUrl = Bundle.main.url(forResource: fileName, withExtension: fileExtension) else {
+                print("BackgroundVideo: Resource not found in bundle: \(fileName).\(fileExtension)")
+                return
+            }
+            url = bundleUrl
         } else {
+            // Filesystem path
             url = URL(fileURLWithPath: path)
         }
         

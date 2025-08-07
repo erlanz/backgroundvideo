@@ -1,4 +1,14 @@
-import type { BackgroundVideoPlugin } from './definitions';
-declare const BackgroundVideo: BackgroundVideoPlugin;
+declare class BackgroundVideoWrapper {
+    private plugin;
+    playVideo(options: {
+        path: string;
+    }): Promise<void>;
+    pauseVideo(): Promise<void>;
+    resumeVideo(): Promise<void>;
+    stopVideo(): Promise<void>;
+    setVolume(options: {
+        volume: number;
+    }): Promise<void>;
+}
 export * from './definitions';
-export { BackgroundVideo };
+export { BackgroundVideoWrapper as BackgroundVideo };

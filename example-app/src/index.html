@@ -39,6 +39,22 @@
         margin: 0 auto;
       }
       
+      .video-sources {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 16px;
+        padding: 16px;
+        background: #f8f9fa;
+        border-radius: 8px;
+      }
+      
+      .video-sources h3 {
+        margin: 0 0 12px 0;
+        color: #333;
+        font-size: 16px;
+      }
+      
       button {
         background: #007AFF;
         color: white;
@@ -56,6 +72,16 @@
       
       button:active {
         background: #004499;
+      }
+      
+      .secondary-button {
+        background: #6c757d;
+        font-size: 14px;
+        padding: 8px 16px;
+      }
+      
+      .secondary-button:hover {
+        background: #5a6268;
       }
       
       .volume-control {
@@ -96,11 +122,18 @@
     <main>
       <h1>🎬 Background Video Plugin Demo</h1>
       <p style="text-align: center; color: #666; margin-bottom: 24px;">
-        Демонстрация плагина для фонового видео с нативным воспроизведением
+        Демонстрация плагина для фонового видео с поддержкой различных источников
       </p>
       
       <div class="controls">
-        <button onclick="startBackgroundVideo()">▶️ Запустить фоновое видео</button>
+        <div class="video-sources">
+          <h3>📹 Источники видео:</h3>
+          <button onclick="startBackgroundVideo()" class="secondary-button">🎯 Assets (assets/video/intro.mp4)</button>
+          <button onclick="startRemoteVideo()" class="secondary-button">🌐 Remote URL (HTTPS)</button>
+          <button onclick="startBundleVideo()" class="secondary-button">📦 Bundle Resource (intro)</button>
+          <button onclick="startLocalVideo()" class="secondary-button">💾 Local Path (/path/to/video.mp4)</button>
+        </div>
+        
         <button onclick="pauseBackgroundVideo()">⏸️ Пауза</button>
         <button onclick="resumeBackgroundVideo()">▶️ Возобновить</button>
         <button onclick="stopBackgroundVideo()">⏹️ Остановить</button>
@@ -113,7 +146,15 @@
       </div>
       
       <div class="status">
-        <strong>Статус:</strong> Готов к использованию. Нажмите "Запустить фоновое видео" для начала демонстрации.
+        <strong>Статус:</strong> Готов к использованию. Выберите источник видео для начала демонстрации.
+        <br><br>
+        <strong>Возможности:</strong>
+        <ul style="margin: 8px 0; padding-left: 20px;">
+          <li>🎯 <strong>Assets:</strong> Автоматически преобразуется в HTTP URL (http://localhost/assets/video/intro.mp4)</li>
+          <li>🌐 <strong>Remote:</strong> Прямая загрузка с HTTPS URL</li>
+          <li>📦 <strong>Bundle:</strong> Загрузка из iOS Bundle или Android raw ресурсов</li>
+          <li>💾 <strong>Local:</strong> Загрузка с локального пути файловой системы</li>
+        </ul>
       </div>
     </main>
 

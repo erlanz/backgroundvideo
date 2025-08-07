@@ -6,6 +6,7 @@ import android.widget.FrameLayout;
 import android.media.MediaPlayer;
 import android.view.ViewGroup;
 import android.view.View;
+import android.net.Uri;
 import com.getcapacitor.Logger;
 
 public class BackgroundVideo {
@@ -43,13 +44,39 @@ public class BackgroundVideo {
                     }
                 }
                 
+                // Three-branch URL resolution logic
+                Uri videoUri;
+                
+                if (path.startsWith("http://") || path.startsWith("https://")) {
+                    // Remote/hosted URL
+                    videoUri = Uri.parse(path);
+                } else if (!path.contains("/") || path.endsWith(".mp4") || path.endsWith(".mov") || path.endsWith(".m4v")) {
+                    // Bare resource name - resolve to raw resource
+                    String resourceName = path;
+                    if (path.contains(".")) {
+                        resourceName = path.substring(0, path.lastIndexOf("."));
+                    }
+                    videoUri = Uri.parse("android.resource://" + activity.getPackageName() + "/raw/" + resourceName);
+                } else {
+                    // Filesystem path
+                    videoUri = Uri.parse(path);
+                }
+                
                 // Устанавливаем файл видео и запускаем
-                videoView.setVideoPath(path);
+                videoView.setVideoURI(videoUri);
                 videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                     @Override
                     public void onPrepared(MediaPlayer mp) {
                         mp.setLooping(true); // зациклить видео
                         videoView.start();
+                    }
+                });
+                
+                // Handle completion for looping
+                videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        videoView.start(); // Restart for looping
                     }
                 });
                 
@@ -94,8 +121,8 @@ public class BackgroundVideo {
                 // VideoView не имеет прямого метода setVolume, но можно получить MediaPlayer
                 // и установить громкость через него
                 try {
-                    // Это может не работать на всех устройствах
-                    // Лучше использовать ExoPlayer для более точного контроля
+                    // This may not work on all devices
+                    // Better to use ExoPlayer for more precise control
                 } catch (Exception e) {
                     Logger.error("BackgroundVideo", "Error setting volume: " + e.getMessage());
                 }

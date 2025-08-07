@@ -6,6 +6,13 @@ export class BackgroundVideoWeb extends WebPlugin {
     }
     async playVideo(options) {
         console.log('BackgroundVideo: playVideo', options);
+        let { path } = options;
+        // Transform assets/ paths to HTTP URLs for consistency with native
+        if (path.startsWith('assets/')) {
+            const origin = window.location.origin;
+            path = `${origin}/${path}`;
+            console.log('BackgroundVideo: Transformed assets path to:', path);
+        }
         // Создаем видео элемент если его нет
         if (!this.videoElement) {
             this.videoElement = document.createElement('video');
@@ -20,7 +27,7 @@ export class BackgroundVideoWeb extends WebPlugin {
             this.videoElement.muted = true;
             document.body.appendChild(this.videoElement);
         }
-        this.videoElement.src = options.path;
+        this.videoElement.src = path;
         await this.videoElement.play();
     }
     async pauseVideo() {

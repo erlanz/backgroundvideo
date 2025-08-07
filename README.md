@@ -4,7 +4,7 @@ Capacitor плагин для воспроизведения фонового в
 
 ## Описание
 
-Этот плагин позволяет воспроизводить локальные видеофайлы в качестве фона приложения, используя аппаратное ускорение на уровне платформы. Видео размещается под WebView, что обеспечивает плавное воспроизведение без фризов интерфейса.
+Этот плагин позволяет воспроизводить видеофайлы в качестве фона приложения, используя аппаратное ускорение на уровне платформы. Видео размещается под WebView, что обеспечивает плавное воспроизведение без фризов интерфейса.
 
 ### Особенности
 
@@ -13,6 +13,7 @@ Capacitor плагин для воспроизведения фонового в
 - **Автоматическое зацикливание**: Видео автоматически повторяется
 - **Управление воспроизведением**: Методы для паузы, возобновления и остановки
 - **Управление громкостью**: Возможность настройки громкости
+- **Множественные источники**: Поддержка HTTP URL, assets, bundle ресурсов и локальных файлов
 
 ## Установка
 
@@ -33,10 +34,27 @@ import { BackgroundVideo } from 'backgroundvideo';
 
 #### Воспроизведение видео
 
+Плагин поддерживает несколько типов источников видео:
+
 ```typescript
-// Запуск фонового видео
+// 1. Assets путь (автоматически преобразуется в HTTP URL)
 await BackgroundVideo.playVideo({ 
-  path: '/path/to/your/video.mp4' 
+  path: 'assets/video/intro.mp4' 
+});
+
+// 2. Удаленный HTTP URL
+await BackgroundVideo.playVideo({ 
+  path: 'https://example.com/video.mp4' 
+});
+
+// 3. Bundle ресурс (iOS) или raw ресурс (Android)
+await BackgroundVideo.playVideo({ 
+  path: 'intro' // Без расширения файла
+});
+
+// 4. Локальный путь файловой системы
+await BackgroundVideo.playVideo({ 
+  path: '/path/to/video.mp4' 
 });
 ```
 
@@ -97,8 +115,9 @@ export class OnboardingPage implements OnInit {
 
   async startVideo() {
     try {
+      // Используем assets путь - автоматически преобразуется в HTTP URL
       await BackgroundVideo.playVideo({ 
-        path: 'assets/onboarding.mp4' 
+        path: 'assets/video/intro.mp4' 
       });
     } catch (error) {
       console.error('Ошибка воспроизведения видео:', error);
@@ -113,18 +132,51 @@ export class OnboardingPage implements OnInit {
 
 ## Подготовка видеофайлов
 
-### iOS
+### Способ 1: Assets папка (рекомендуется)
+
+Поместите видеофайл в папку `src/assets/video/` вашего проекта:
+
+```
+src/
+  assets/
+    video/
+      intro.mp4
+```
+
+Плагин автоматически преобразует путь `assets/video/intro.mp4` в `http://localhost/assets/video/intro.mp4` для нативного воспроизведения.
+
+### Способ 2: Bundle ресурсы
+
+#### iOS
 Добавьте видеофайл в проект Xcode:
 1. Откройте проект в Xcode
 2. Перетащите видеофайл в проект
 3. Убедитесь, что файл добавлен в "Copy Bundle Resources"
-4. Используйте путь: `Bundle.main.path(forResource: "video_name", ofType: "mp4")`
+4. Используйте путь: `intro` (без расширения)
 
-### Android
+#### Android
 Поместите видеофайл в `android/app/src/main/res/raw/`:
 1. Создайте папку `raw` если её нет
 2. Поместите видеофайл в эту папку
-3. Используйте путь: `android.resource://your.package.name/raw/video_name`
+3. Используйте путь: `intro` (без расширения)
+
+### Способ 3: Удаленные URL
+
+Используйте прямые HTTP/HTTPS ссылки:
+
+```typescript
+await BackgroundVideo.playVideo({ 
+  path: 'https://example.com/video.mp4' 
+});
+```
+
+## Логика разрешения путей
+
+Плагин автоматически определяет тип источника видео:
+
+1. **HTTP/HTTPS URL**: Если путь начинается с `http://` или `https://`
+2. **Bundle ресурс**: Если путь не содержит `/` или заканчивается на `.mp4`, `.mov`, `.m4v`
+3. **Файловая система**: Во всех остальных случаях
 
 ## API
 
@@ -137,7 +189,7 @@ export class OnboardingPage implements OnInit {
 | Param | Type | Description |
 |-------|------|-------------|
 | **options** | `{ path: string }` | Опции воспроизведения |
-| **options.path** | `string` | Путь к видеофайлу |
+| **options.path** | `string` | Путь к видеофайлу (поддерживает assets, HTTP URL, bundle ресурсы, локальные пути) |
 
 #### pauseVideo()
 

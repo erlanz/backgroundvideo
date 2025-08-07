@@ -6,5 +6,38 @@ const BackgroundVideo = registerPlugin<BackgroundVideoPlugin>('BackgroundVideo',
   web: () => import('./web').then((m) => new m.BackgroundVideoWeb()),
 });
 
+// Enhanced wrapper that handles assets path transformation
+class BackgroundVideoWrapper {
+  private plugin = BackgroundVideo;
+
+  async playVideo(options: { path: string }): Promise<void> {
+    let { path } = options;
+    
+    // Transform assets/ paths to HTTP URLs for Capacitor web server
+    if (path.startsWith('assets/')) {
+      const origin = window.location.origin;
+      path = `${origin}/${path}`;
+    }
+    
+    return this.plugin.playVideo({ path });
+  }
+
+  async pauseVideo(): Promise<void> {
+    return this.plugin.pauseVideo();
+  }
+
+  async resumeVideo(): Promise<void> {
+    return this.plugin.resumeVideo();
+  }
+
+  async stopVideo(): Promise<void> {
+    return this.plugin.stopVideo();
+  }
+
+  async setVolume(options: { volume: number }): Promise<void> {
+    return this.plugin.setVolume(options);
+  }
+}
+
 export * from './definitions';
-export { BackgroundVideo };
+export { BackgroundVideoWrapper as BackgroundVideo };
