@@ -3,7 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "Backgroundvideo",
-    platforms: [.iOS(.v14)],
+    platforms: [.iOS(.v13)],
     products: [
         .library(
             name: "Backgroundvideo",
