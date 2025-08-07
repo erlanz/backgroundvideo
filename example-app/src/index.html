@@ -2,23 +2,119 @@
 <html lang="en" dir="ltr" class="hydrated">
   <head>
     <meta charset="UTF-8" />
-    <title>Example Capacitor App</title>
+    <title>Background Video Plugin Demo</title>
     <meta
       name="viewport"
       content="viewport-fit=cover, width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
     <meta name="format-detection" content="telephone=no" />
+    <style>
+      body {
+        margin: 0;
+        padding: 20px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: transparent;
+      }
+      
+      main {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 12px;
+        padding: 24px;
+        margin: 20px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      }
+      
+      h1 {
+        color: #333;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      
+      .controls {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        max-width: 400px;
+        margin: 0 auto;
+      }
+      
+      button {
+        background: #007AFF;
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      
+      button:hover {
+        background: #0056CC;
+      }
+      
+      button:active {
+        background: #004499;
+      }
+      
+      .volume-control {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 10px;
+      }
+      
+      input[type="range"] {
+        flex: 1;
+        height: 6px;
+        border-radius: 3px;
+        background: #ddd;
+        outline: none;
+      }
+      
+      input[type="range"]::-webkit-slider-thumb {
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #007AFF;
+        cursor: pointer;
+      }
+      
+      .status {
+        margin-top: 20px;
+        padding: 10px;
+        background: #f0f0f0;
+        border-radius: 6px;
+        font-size: 14px;
+        color: #666;
+      }
+    </style>
   </head>
   <body>
     <main>
-      <h1>Capacitor Test Plugin Project</h1>
-      <p>
-        This project can be used to test out the functionality of your plugin. Nothing in the
-        <em>example-app/</em> folder will be published to npm when using this template, so you can create away!
+      <h1>🎬 Background Video Plugin Demo</h1>
+      <p style="text-align: center; color: #666; margin-bottom: 24px;">
+        Демонстрация плагина для фонового видео с нативным воспроизведением
       </p>
-      <label for="echoInput">Echo Text:</label>
-      <input type="text" id="echoInput" name="echoInput" value="Hello World!" />
-      <button onclick="testEcho()">Click Me!</button>
+      
+      <div class="controls">
+        <button onclick="startBackgroundVideo()">▶️ Запустить фоновое видео</button>
+        <button onclick="pauseBackgroundVideo()">⏸️ Пауза</button>
+        <button onclick="resumeBackgroundVideo()">▶️ Возобновить</button>
+        <button onclick="stopBackgroundVideo()">⏹️ Остановить</button>
+        
+        <div class="volume-control">
+          <label for="volumeInput">Громкость:</label>
+          <input type="range" id="volumeInput" min="0" max="1" step="0.1" value="0.5">
+          <button onclick="setVideoVolume()">🔊 Установить</button>
+        </div>
+      </div>
+      
+      <div class="status">
+        <strong>Статус:</strong> Готов к использованию. Нажмите "Запустить фоновое видео" для начала демонстрации.
+      </div>
     </main>
 
     <script src="./js/example.js" type="module"></script>

@@ -11,12 +11,49 @@ public class BackgroundVideoPlugin extends Plugin {
 
     private BackgroundVideo implementation = new BackgroundVideo();
 
-    @PluginMethod
-    public void echo(PluginCall call) {
-        String value = call.getString("value");
+    @Override
+    public void load() {
+        super.load();
+        implementation.setActivity(getActivity());
+    }
 
-        JSObject ret = new JSObject();
-        ret.put("value", implementation.echo(value));
-        call.resolve(ret);
+    @PluginMethod
+    public void playVideo(PluginCall call) {
+        String path = call.getString("path");
+        if (path == null || path.isEmpty()) {
+            call.reject("No video path provided");
+            return;
+        }
+        
+        implementation.playVideo(path);
+        call.resolve();
+    }
+
+    @PluginMethod
+    public void pauseVideo(PluginCall call) {
+        implementation.pauseVideo();
+        call.resolve();
+    }
+
+    @PluginMethod
+    public void resumeVideo(PluginCall call) {
+        implementation.resumeVideo();
+        call.resolve();
+    }
+
+    @PluginMethod
+    public void stopVideo(PluginCall call) {
+        implementation.stopVideo();
+        call.resolve();
+    }
+
+    @PluginMethod
+    public void setVolume(PluginCall call) {
+        Double volume = call.getDouble("volume");
+        if (volume == null) {
+            volume = 1.0;
+        }
+        implementation.setVolume(volume.floatValue());
+        call.resolve();
     }
 }

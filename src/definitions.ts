@@ -1,3 +1,7 @@
 export interface BackgroundVideoPlugin {
-  echo(options: { value: string }): Promise<{ value: string }>;
+  playVideo(options: { path: string }): Promise<void>;
+  pauseVideo(): Promise<void>;
+  resumeVideo(): Promise<void>;
+  stopVideo(): Promise<void>;
+  setVolume(options: { volume: number }): Promise<void>;
 }
