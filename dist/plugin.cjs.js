@@ -32,6 +32,8 @@ class BackgroundVideoWrapper {
         return this.plugin.setVolume(options);
     }
 }
+// Create and export an instance
+const BackgroundVideoInstance = new BackgroundVideoWrapper();
 
 class BackgroundVideoWeb extends core.WebPlugin {
     constructor() {
@@ -97,5 +99,5 @@ var web = /*#__PURE__*/Object.freeze({
     BackgroundVideoWeb: BackgroundVideoWeb
 });
 
-exports.BackgroundVideo = BackgroundVideoWrapper;
+exports.BackgroundVideo = BackgroundVideoInstance;
 //# sourceMappingURL=plugin.cjs.js.map

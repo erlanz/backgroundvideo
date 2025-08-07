@@ -5,3 +5,6 @@ export interface BackgroundVideoPlugin {
   stopVideo(): Promise<void>;
   setVolume(options: { volume: number }): Promise<void>;
 }
+
+// Export the wrapper type for better TypeScript support
+export type BackgroundVideo = BackgroundVideoPlugin;

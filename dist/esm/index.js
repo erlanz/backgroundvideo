@@ -29,6 +29,8 @@ class BackgroundVideoWrapper {
         return this.plugin.setVolume(options);
     }
 }
+// Create and export an instance
+const BackgroundVideoInstance = new BackgroundVideoWrapper();
 export * from './definitions';
-export { BackgroundVideoWrapper as BackgroundVideo };
+export { BackgroundVideoInstance as BackgroundVideo };
 //# sourceMappingURL=index.js.map

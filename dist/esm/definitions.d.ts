@@ -9,3 +9,4 @@ export interface BackgroundVideoPlugin {
         volume: number;
     }): Promise<void>;
 }
+export declare type BackgroundVideo = BackgroundVideoPlugin;

@@ -31,6 +31,8 @@ var capacitorBackgroundVideo = (function (exports, core) {
             return this.plugin.setVolume(options);
         }
     }
+    // Create and export an instance
+    const BackgroundVideoInstance = new BackgroundVideoWrapper();
 
     class BackgroundVideoWeb extends core.WebPlugin {
         constructor() {
@@ -96,7 +98,7 @@ var capacitorBackgroundVideo = (function (exports, core) {
         BackgroundVideoWeb: BackgroundVideoWeb
     });
 
-    exports.BackgroundVideo = BackgroundVideoWrapper;
+    exports.BackgroundVideo = BackgroundVideoInstance;
 
     return exports;
 

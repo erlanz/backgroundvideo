@@ -7,7 +7,7 @@ const BackgroundVideo = registerPlugin<BackgroundVideoPlugin>('BackgroundVideo',
 });
 
 // Enhanced wrapper that handles assets path transformation
-class BackgroundVideoWrapper {
+class BackgroundVideoWrapper implements BackgroundVideoPlugin {
   private plugin = BackgroundVideo;
 
   async playVideo(options: { path: string }): Promise<void> {
@@ -39,5 +39,8 @@ class BackgroundVideoWrapper {
   }
 }
 
+// Create and export an instance
+const BackgroundVideoInstance = new BackgroundVideoWrapper();
+
 export * from './definitions';
-export { BackgroundVideoWrapper as BackgroundVideo };
+export { BackgroundVideoInstance as BackgroundVideo };
