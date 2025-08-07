@@ -1,0 +1,77 @@
+{
+  "api": {
+    "name": "BackgroundVideoPlugin",
+    "slug": "backgroundvideoplugin",
+    "docs": "",
+    "tags": [],
+    "methods": [
+      {
+        "name": "playVideo",
+        "signature": "(options: { path: string; }) => any",
+        "parameters": [
+          {
+            "name": "options",
+            "docs": "",
+            "type": "{ path: string; }"
+          }
+        ],
+        "returns": "any",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [],
+        "slug": "playvideo"
+      },
+      {
+        "name": "pauseVideo",
+        "signature": "() => any",
+        "parameters": [],
+        "returns": "any",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [],
+        "slug": "pausevideo"
+      },
+      {
+        "name": "resumeVideo",
+        "signature": "() => any",
+        "parameters": [],
+        "returns": "any",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [],
+        "slug": "resumevideo"
+      },
+      {
+        "name": "stopVideo",
+        "signature": "() => any",
+        "parameters": [],
+        "returns": "any",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [],
+        "slug": "stopvideo"
+      },
+      {
+        "name": "setVolume",
+        "signature": "(options: { volume: number; }) => any",
+        "parameters": [
+          {
+            "name": "options",
+            "docs": "",
+            "type": "{ volume: number; }"
+          }
+        ],
+        "returns": "any",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [],
+        "slug": "setvolume"
+      }
+    ],
+    "properties": []
+  },
+  "interfaces": [],
+  "enums": [],
+  "typeAliases": [],
+  "pluginConfigs": []
+}
