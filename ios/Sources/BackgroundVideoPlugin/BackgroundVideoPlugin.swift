@@ -19,8 +19,17 @@ public class BackgroundVideoPlugin: CAPPlugin, CAPBridgedPlugin {
     private let implementation = BackgroundVideo()
 
     @objc func playVideo(_ call: CAPPluginCall) {
-        let path = call.getString("path") ?? ""
-        implementation.playVideo(path: path)
+        // получаем имя ресурса
+        let name = call.getString("path") ?? "intro"
+        
+        // ищем в bundle
+        guard let url = Bundle.main.url(forResource: name, withExtension: "mp4") else {
+            call.reject("Resource not found in bundle: \(name).mp4")
+            return
+        }
+        
+        // дальше плейер как обычно
+        implementation.playVideo(path: url.path)
         call.resolve()
     }
     

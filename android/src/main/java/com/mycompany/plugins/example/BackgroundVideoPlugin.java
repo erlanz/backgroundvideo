@@ -19,13 +19,22 @@ public class BackgroundVideoPlugin extends Plugin {
 
     @PluginMethod
     public void playVideo(PluginCall call) {
-        String path = call.getString("path");
-        if (path == null || path.isEmpty()) {
-            call.reject("No video path provided");
+        String name = call.getString("path");
+        if (name == null || name.isEmpty()) {
+            name = "intro";
+        }
+        
+        // ищем raw ресурс
+        int resId = getActivity().getResources().getIdentifier(name, "raw", getActivity().getPackageName());
+        if (resId == 0) {
+            call.reject("Raw resource not found: " + name);
             return;
         }
         
-        implementation.playVideo(path);
+        // создаем URI для raw ресурса
+        String uri = "android.resource://" + getActivity().getPackageName() + "/raw/" + name;
+        
+        implementation.playVideo(uri);
         call.resolve();
     }
 

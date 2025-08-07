@@ -44,23 +44,8 @@ public class BackgroundVideo {
                     }
                 }
                 
-                // Three-branch URL resolution logic
-                Uri videoUri;
-                
-                if (path.startsWith("http://") || path.startsWith("https://")) {
-                    // Remote/hosted URL
-                    videoUri = Uri.parse(path);
-                } else if (!path.contains("/") || path.endsWith(".mp4") || path.endsWith(".mov") || path.endsWith(".m4v")) {
-                    // Bare resource name - resolve to raw resource
-                    String resourceName = path;
-                    if (path.contains(".")) {
-                        resourceName = path.substring(0, path.lastIndexOf("."));
-                    }
-                    videoUri = Uri.parse("android.resource://" + activity.getPackageName() + "/raw/" + resourceName);
-                } else {
-                    // Filesystem path
-                    videoUri = Uri.parse(path);
-                }
+                // Создаем URI из пути (теперь path уже содержит правильный URI)
+                Uri videoUri = Uri.parse(path);
                 
                 // Устанавливаем файл видео и запускаем
                 videoView.setVideoURI(videoUri);
