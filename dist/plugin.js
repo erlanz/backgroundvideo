@@ -1,6 +1,25 @@
 var capacitorBackgroundVideo = (function (exports, core) {
     'use strict';
 
+    // Also export as a class for better compatibility
+    let BackgroundVideoWrapper$1 = class BackgroundVideoWrapper {
+        async playVideo(_options) {
+            throw new Error('BackgroundVideoWrapper must be instantiated');
+        }
+        async pauseVideo() {
+            throw new Error('BackgroundVideoWrapper must be instantiated');
+        }
+        async resumeVideo() {
+            throw new Error('BackgroundVideoWrapper must be instantiated');
+        }
+        async stopVideo() {
+            throw new Error('BackgroundVideoWrapper must be instantiated');
+        }
+        async setVolume(_options) {
+            throw new Error('BackgroundVideoWrapper must be instantiated');
+        }
+    };
+
     const BackgroundVideo = core.registerPlugin('BackgroundVideo', {
         web: () => Promise.resolve().then(function () { return web; }).then((m) => new m.BackgroundVideoWeb()),
     });
@@ -99,6 +118,10 @@ var capacitorBackgroundVideo = (function (exports, core) {
     });
 
     exports.BackgroundVideo = BackgroundVideoInstance;
+    exports.BackgroundVideoWrapper = BackgroundVideoWrapper$1;
+    exports.default = BackgroundVideoInstance;
+
+    Object.defineProperty(exports, '__esModule', { value: true });
 
     return exports;
 

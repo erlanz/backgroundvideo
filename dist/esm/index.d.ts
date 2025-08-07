@@ -14,3 +14,4 @@ declare class BackgroundVideoWrapper implements BackgroundVideoPlugin {
 declare const BackgroundVideoInstance: BackgroundVideoWrapper;
 export * from './definitions';
 export { BackgroundVideoInstance as BackgroundVideo };
+export default BackgroundVideoInstance;

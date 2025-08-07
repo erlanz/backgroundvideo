@@ -31,6 +31,9 @@ class BackgroundVideoWrapper {
 }
 // Create and export an instance
 const BackgroundVideoInstance = new BackgroundVideoWrapper();
+// Export everything
 export * from './definitions';
 export { BackgroundVideoInstance as BackgroundVideo };
+// Also export as default for better compatibility
+export default BackgroundVideoInstance;
 //# sourceMappingURL=index.js.map
