@@ -10,6 +10,11 @@ declare class BackgroundVideoWrapper implements BackgroundVideoPlugin {
     setVolume(options: {
         volume: number;
     }): Promise<void>;
+    listResources(): Promise<{
+        bundlePath: string;
+        allResources: string[];
+        videoResources: string[];
+    }>;
 }
 declare const BackgroundVideoInstance: BackgroundVideoWrapper;
 export * from './definitions';

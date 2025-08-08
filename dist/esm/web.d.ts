@@ -11,4 +11,9 @@ export declare class BackgroundVideoWeb extends WebPlugin implements BackgroundV
     setVolume(options: {
         volume: number;
     }): Promise<void>;
+    listResources(): Promise<{
+        bundlePath: string;
+        allResources: string[];
+        videoResources: string[];
+    }>;
 }

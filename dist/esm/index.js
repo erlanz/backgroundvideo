@@ -28,6 +28,9 @@ class BackgroundVideoWrapper {
     async setVolume(options) {
         return this.plugin.setVolume(options);
     }
+    async listResources() {
+        return this.plugin.listResources();
+    }
 }
 // Create and export an instance
 const BackgroundVideoInstance = new BackgroundVideoWrapper();

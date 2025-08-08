@@ -21,6 +21,9 @@ let BackgroundVideoWrapper$1 = class BackgroundVideoWrapper {
     async setVolume(_options) {
         throw new Error('BackgroundVideoWrapper must be instantiated');
     }
+    async listResources() {
+        throw new Error('BackgroundVideoWrapper must be instantiated');
+    }
 };
 
 const BackgroundVideo = core.registerPlugin('BackgroundVideo', {
@@ -51,6 +54,9 @@ class BackgroundVideoWrapper {
     }
     async setVolume(options) {
         return this.plugin.setVolume(options);
+    }
+    async listResources() {
+        return this.plugin.listResources();
     }
 }
 // Create and export an instance
@@ -112,6 +118,15 @@ class BackgroundVideoWeb extends core.WebPlugin {
         if (this.videoElement) {
             this.videoElement.volume = Math.max(0, Math.min(1, options.volume));
         }
+    }
+    async listResources() {
+        console.log('BackgroundVideo: listResources (web)');
+        // В веб-версии возвращаем пустые данные
+        return {
+            bundlePath: 'web',
+            allResources: [],
+            videoResources: []
+        };
     }
 }
 

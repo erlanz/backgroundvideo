@@ -18,6 +18,9 @@ var capacitorBackgroundVideo = (function (exports, core) {
         async setVolume(_options) {
             throw new Error('BackgroundVideoWrapper must be instantiated');
         }
+        async listResources() {
+            throw new Error('BackgroundVideoWrapper must be instantiated');
+        }
     };
 
     const BackgroundVideo = core.registerPlugin('BackgroundVideo', {
@@ -48,6 +51,9 @@ var capacitorBackgroundVideo = (function (exports, core) {
         }
         async setVolume(options) {
             return this.plugin.setVolume(options);
+        }
+        async listResources() {
+            return this.plugin.listResources();
         }
     }
     // Create and export an instance
@@ -109,6 +115,15 @@ var capacitorBackgroundVideo = (function (exports, core) {
             if (this.videoElement) {
                 this.videoElement.volume = Math.max(0, Math.min(1, options.volume));
             }
+        }
+        async listResources() {
+            console.log('BackgroundVideo: listResources (web)');
+            // В веб-версии возвращаем пустые данные
+            return {
+                bundlePath: 'web',
+                allResources: [],
+                videoResources: []
+            };
         }
     }
 

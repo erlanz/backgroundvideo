@@ -12,7 +12,9 @@ import UIKit
             return
         }
         
-        // Three-branch URL resolution logic
+        print("BackgroundVideo: Creating player for path: \(path)")
+        
+        // Создаем URL для видео файла
         let url: URL
         
         if path.hasPrefix("http://") || path.hasPrefix("https://") {
@@ -22,19 +24,20 @@ import UIKit
                 return
             }
             url = remoteUrl
-        } else if path.contains("/") == false || path.hasSuffix(".mp4") || path.hasSuffix(".mov") || path.hasSuffix(".m4v") {
-            // Bare resource name - resolve to bundle
-            let fileName = (path as NSString).deletingPathExtension
-            let fileExtension = (path as NSString).pathExtension.isEmpty ? "mp4" : (path as NSString).pathExtension
-            
-            guard let bundleUrl = Bundle.main.url(forResource: fileName, withExtension: fileExtension) else {
-                print("BackgroundVideo: Resource not found in bundle: \(fileName).\(fileExtension)")
+            print("BackgroundVideo: Using remote URL: \(url)")
+        } else if path.hasPrefix("/") {
+            // Filesystem path
+            url = URL(fileURLWithPath: path)
+            print("BackgroundVideo: Using filesystem path: \(url)")
+        } else {
+            // Это должно быть имя ресурса - ищем в bundle
+            print("BackgroundVideo: Looking for bundle resource: \(path)")
+            guard let bundleUrl = Bundle.main.url(forResource: path, withExtension: "mp4") else {
+                print("BackgroundVideo: Resource not found in bundle: \(path).mp4")
                 return
             }
             url = bundleUrl
-        } else {
-            // Filesystem path
-            url = URL(fileURLWithPath: path)
+            print("BackgroundVideo: Found bundle resource: \(url)")
         }
         
         // Создаем плеер
@@ -60,6 +63,7 @@ import UIKit
                 
                 // Запускаем воспроизведение
                 self.player?.play()
+                print("BackgroundVideo: Video started playing")
                 
                 // Подписываемся на окончание воспроизведения для зацикливания
                 NotificationCenter.default.addObserver(
@@ -74,10 +78,12 @@ import UIKit
     
     @objc public func pauseVideo() {
         player?.pause()
+        print("BackgroundVideo: Video paused")
     }
     
     @objc public func resumeVideo() {
         player?.play()
+        print("BackgroundVideo: Video resumed")
     }
     
     @objc public func stopVideo() {
@@ -88,15 +94,18 @@ import UIKit
         
         // Удаляем наблюдатель
         NotificationCenter.default.removeObserver(self, name: .AVPlayerItemDidPlayToEndTime, object: nil)
+        print("BackgroundVideo: Video stopped")
     }
     
     @objc public func setVolume(volume: Float) {
         player?.volume = max(0, min(1, volume))
+        print("BackgroundVideo: Volume set to: \(volume)")
     }
     
     // Обработчик окончания видео - запускает повторное воспроизведение
     @objc private func playerDidReachEnd(notification: NSNotification) {
         player?.seek(to: CMTime.zero)
         player?.play()
+        print("BackgroundVideo: Video looped")
     }
 }

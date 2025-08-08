@@ -4,6 +4,11 @@ export interface BackgroundVideoPlugin {
   resumeVideo(): Promise<void>;
   stopVideo(): Promise<void>;
   setVolume(options: { volume: number }): Promise<void>;
+  listResources(): Promise<{
+    bundlePath: string;
+    allResources: string[];
+    videoResources: string[];
+  }>;
 }
 
 // Export the wrapper type for better TypeScript support
@@ -28,6 +33,14 @@ export class BackgroundVideoWrapper implements BackgroundVideoPlugin {
   }
   
   async setVolume(_options: { volume: number }): Promise<void> {
+    throw new Error('BackgroundVideoWrapper must be instantiated');
+  }
+  
+  async listResources(): Promise<{
+    bundlePath: string;
+    allResources: string[];
+    videoResources: string[];
+  }> {
     throw new Error('BackgroundVideoWrapper must be instantiated');
   }
 }

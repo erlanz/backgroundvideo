@@ -65,4 +65,18 @@ export class BackgroundVideoWeb extends WebPlugin implements BackgroundVideoPlug
       this.videoElement.volume = Math.max(0, Math.min(1, options.volume));
     }
   }
+
+  async listResources(): Promise<{
+    bundlePath: string;
+    allResources: string[];
+    videoResources: string[];
+  }> {
+    console.log('BackgroundVideo: listResources (web)');
+    // В веб-версии возвращаем пустые данные
+    return {
+      bundlePath: 'web',
+      allResources: [],
+      videoResources: []
+    };
+  }
 }

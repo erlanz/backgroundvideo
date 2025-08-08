@@ -37,6 +37,14 @@ class BackgroundVideoWrapper implements BackgroundVideoPlugin {
   async setVolume(options: { volume: number }): Promise<void> {
     return this.plugin.setVolume(options);
   }
+
+  async listResources(): Promise<{
+    bundlePath: string;
+    allResources: string[];
+    videoResources: string[];
+  }> {
+    return this.plugin.listResources();
+  }
 }
 
 // Create and export an instance

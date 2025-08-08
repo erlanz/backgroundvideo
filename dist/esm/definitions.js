@@ -15,5 +15,8 @@ export class BackgroundVideoWrapper {
     async setVolume(_options) {
         throw new Error('BackgroundVideoWrapper must be instantiated');
     }
+    async listResources() {
+        throw new Error('BackgroundVideoWrapper must be instantiated');
+    }
 }
 //# sourceMappingURL=definitions.js.map

@@ -8,6 +8,11 @@ export interface BackgroundVideoPlugin {
     setVolume(options: {
         volume: number;
     }): Promise<void>;
+    listResources(): Promise<{
+        bundlePath: string;
+        allResources: string[];
+        videoResources: string[];
+    }>;
 }
 export declare type BackgroundVideo = BackgroundVideoPlugin;
 export declare class BackgroundVideoWrapper implements BackgroundVideoPlugin {
@@ -20,4 +25,9 @@ export declare class BackgroundVideoWrapper implements BackgroundVideoPlugin {
     setVolume(_options: {
         volume: number;
     }): Promise<void>;
+    listResources(): Promise<{
+        bundlePath: string;
+        allResources: string[];
+        videoResources: string[];
+    }>;
 }

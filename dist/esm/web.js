@@ -56,5 +56,14 @@ export class BackgroundVideoWeb extends WebPlugin {
             this.videoElement.volume = Math.max(0, Math.min(1, options.volume));
         }
     }
+    async listResources() {
+        console.log('BackgroundVideo: listResources (web)');
+        // В веб-версии возвращаем пустые данные
+        return {
+            bundlePath: 'web',
+            allResources: [],
+            videoResources: []
+        };
+    }
 }
 //# sourceMappingURL=web.js.map

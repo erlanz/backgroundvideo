@@ -66,6 +66,16 @@
         "docs": "",
         "complexTypes": [],
         "slug": "setvolume"
+      },
+      {
+        "name": "listResources",
+        "signature": "() => any",
+        "parameters": [],
+        "returns": "any",
+        "tags": [],
+        "docs": "",
+        "complexTypes": [],
+        "slug": "listresources"
       }
     ],
     "properties": []
