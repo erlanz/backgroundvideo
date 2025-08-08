@@ -102,7 +102,7 @@ import UIKit
     private func setupVideoWindow(layer: AVPlayerLayer) {
         print("BackgroundVideo: Setting up video window")
         let videoWindow = UIWindow(frame: UIScreen.main.bounds)
-        videoWindow.windowLevel = UIWindow.Level.normal - 1 // Ниже основного окна
+        videoWindow.windowLevel = UIWindow.Level.normal - 1000 // Ниже основного окна
         videoWindow.backgroundColor = UIColor.clear
         videoWindow.isUserInteractionEnabled = false
         videoWindow.isMultipleTouchEnabled = false
