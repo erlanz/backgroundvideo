@@ -10,8 +10,8 @@ const BackgroundVideo = registerPlugin<BackgroundVideoPlugin>('BackgroundVideo',
 class BackgroundVideoWrapper implements BackgroundVideoPlugin {
   private plugin = BackgroundVideo;
 
-  async playVideo(options: { path: string; useWindow?: boolean }): Promise<void> {
-    let { path, useWindow = false } = options; // по умолчанию слой внутри основного окна
+  async playVideo(options: { path: string; useWindow?: boolean; fullscreen?: boolean }): Promise<void> {
+    let { path, useWindow = false, fullscreen } = options; // по умолчанию слой внутри основного окна
     
     // Transform assets/ paths to HTTP URLs for Capacitor web server
     if (path.startsWith('assets/')) {
@@ -19,7 +19,7 @@ class BackgroundVideoWrapper implements BackgroundVideoPlugin {
       path = `${origin}/${path}`;
     }
     
-    return this.plugin.playVideo({ path, useWindow });
+    return this.plugin.playVideo({ path, useWindow, fullscreen });
   }
 
   async pauseVideo(): Promise<void> {

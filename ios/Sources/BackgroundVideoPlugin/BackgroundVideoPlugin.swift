@@ -1,5 +1,6 @@
 import Foundation
 import Capacitor
+import AVKit
 
 /**
  * Please read the Capacitor iOS Plugin Development Guide
@@ -22,8 +23,9 @@ public class BackgroundVideoPlugin: CAPPlugin, CAPBridgedPlugin {
     @objc func playVideo(_ call: CAPPluginCall) {
         let path = call.getString("path") ?? "intro"
         let useWindow = call.getBool("useWindow") ?? false // default: in-view layer
+        let fullscreen = call.getBool("fullscreen") ?? false
 
-        print("BackgroundVideo: Received path: \(path), useWindow: \(useWindow)")
+        print("BackgroundVideo: Received path: \(path), useWindow: \(useWindow), fullscreen: \(fullscreen)")
 
         // Ensure transparency of the app surfaces so the video behind is visible
         DispatchQueue.main.async { [weak self] in
@@ -36,56 +38,80 @@ public class BackgroundVideoPlugin: CAPPlugin, CAPBridgedPlugin {
                 if #available(iOS 15.0, *) {
                     webView.underPageBackgroundColor = .clear
                 }
-                print("BackgroundVideo: Made WKWebView transparent (incl. underPageBackgroundColor if available)")
             }
             if let vc = self.bridge?.viewController {
                 vc.view.isOpaque = false
                 vc.view.backgroundColor = .clear
                 vc.view.layer.backgroundColor = UIColor.clear.cgColor
-                print("BackgroundVideo: Made root VC background clear")
             }
             if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
                let window = windowScene.windows.first {
                 window.backgroundColor = .clear
                 window.isOpaque = false
                 window.layer.backgroundColor = UIColor.clear.cgColor
-                print("BackgroundVideo: Made main window background clear")
             }
         }
 
+        // Fullscreen mode using AVPlayerViewController (always visible above WebView)
+        if fullscreen {
+            guard let url = self.resolveUrl(path: path) else {
+                call.reject("Unable to resolve video path for fullscreen mode")
+                return
+            }
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                let player = AVPlayer(url: url)
+                let vc = AVPlayerViewController()
+                vc.player = player
+                vc.modalPresentationStyle = .fullScreen
+                self.bridge?.viewController?.present(vc, animated: true) {
+                    player.play()
+                }
+                print("BackgroundVideo: Presented AVPlayerViewController fullscreen")
+                call.resolve()
+            }
+            return
+        }
+
+        // Background modes
         if path.hasPrefix("http://") || path.hasPrefix("https://") {
-            print("BackgroundVideo: Using HTTP URL: \(path)")
             implementation.playVideo(path: path, useWindow: useWindow)
             call.resolve()
             return
         }
 
         if path.hasPrefix("/") {
-            print("BackgroundVideo: Using full file path: \(path)")
             implementation.playVideo(path: path, useWindow: useWindow)
             call.resolve()
             return
         }
 
-        print("BackgroundVideo: Looking for resource: \(path)")
         let extensions = ["mp4", "mov", "m4v"]
         var foundURL: URL? = nil
         for ext in extensions {
             if let url = Bundle.main.url(forResource: path, withExtension: ext) {
                 foundURL = url
-                print("BackgroundVideo: Found resource: \(url.path)")
                 break
             }
         }
 
         if let url = foundURL {
-            print("BackgroundVideo: Using bundle resource: \(url.path)")
             implementation.playVideo(path: url.path, useWindow: useWindow)
             call.resolve()
         } else {
             let bundlePath = Bundle.main.bundlePath
             call.reject("Resource not found in bundle: \(path).mp4/mov/m4v. Bundle path: \(bundlePath)")
         }
+    }
+
+    private func resolveUrl(path: String) -> URL? {
+        if path.hasPrefix("http://") || path.hasPrefix("https://") { return URL(string: path) }
+        if path.hasPrefix("/") { return URL(fileURLWithPath: path) }
+        let extensions = ["mp4", "mov", "m4v"]
+        for ext in extensions {
+            if let url = Bundle.main.url(forResource: path, withExtension: ext) { return url }
+        }
+        return nil
     }
 
     @objc func listResources(_ call: CAPPluginCall) {
@@ -105,17 +131,17 @@ public class BackgroundVideoPlugin: CAPPlugin, CAPBridgedPlugin {
         implementation.pauseVideo()
         call.resolve()
     }
-
+    
     @objc func resumeVideo(_ call: CAPPluginCall) {
         implementation.resumeVideo()
         call.resolve()
     }
-
+    
     @objc func stopVideo(_ call: CAPPluginCall) {
         implementation.stopVideo()
         call.resolve()
     }
-
+    
     @objc func setVolume(_ call: CAPPluginCall) {
         let volume = call.getDouble("volume") ?? 1.0
         implementation.setVolume(volume: Float(volume))

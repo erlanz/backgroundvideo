@@ -7,12 +7,12 @@
     "methods": [
       {
         "name": "playVideo",
-        "signature": "(options: { path: string; useWindow?: boolean; }) => any",
+        "signature": "(options: { path: string; useWindow?: boolean; fullscreen?: boolean; }) => any",
         "parameters": [
           {
             "name": "options",
             "docs": "",
-            "type": "{ path: string; useWindow?: boolean | undefined; }"
+            "type": "{ path: string; useWindow?: boolean | undefined; fullscreen?: boolean | undefined; }"
           }
         ],
         "returns": "any",

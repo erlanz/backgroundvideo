@@ -8,13 +8,13 @@ class BackgroundVideoWrapper {
         this.plugin = BackgroundVideo;
     }
     async playVideo(options) {
-        let { path, useWindow = false } = options; // по умолчанию слой внутри основного окна
+        let { path, useWindow = false, fullscreen } = options; // по умолчанию слой внутри основного окна
         // Transform assets/ paths to HTTP URLs for Capacitor web server
         if (path.startsWith('assets/')) {
             const origin = window.location.origin;
             path = `${origin}/${path}`;
         }
-        return this.plugin.playVideo({ path, useWindow });
+        return this.plugin.playVideo({ path, useWindow, fullscreen });
     }
     async pauseVideo() {
         return this.plugin.pauseVideo();
