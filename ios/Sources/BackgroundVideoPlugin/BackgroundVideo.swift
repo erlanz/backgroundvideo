@@ -106,6 +106,14 @@ import UIKit
         videoWindow.backgroundColor = UIColor.clear
         videoWindow.isUserInteractionEnabled = false
         videoWindow.isMultipleTouchEnabled = false
+
+        // ВАЖНО: привязываем окно к активной сцене, иначе его может не быть видно на iOS 13+
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+            videoWindow.windowScene = windowScene
+            print("BackgroundVideo: Attached video window to active UIWindowScene")
+        } else {
+            print("BackgroundVideo: Could not find active UIWindowScene for video window")
+        }
         
         let videoViewController = UIViewController()
         videoViewController.view.backgroundColor = UIColor.clear
