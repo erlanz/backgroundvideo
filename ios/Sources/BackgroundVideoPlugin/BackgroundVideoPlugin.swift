@@ -21,32 +21,38 @@ public class BackgroundVideoPlugin: CAPPlugin, CAPBridgedPlugin {
 
     @objc func playVideo(_ call: CAPPluginCall) {
         let path = call.getString("path") ?? "intro"
-        let useWindow = call.getBool("useWindow") ?? false // По умолчанию используем слой в основном окне
+        let useWindow = call.getBool("useWindow") ?? false // default: in-view layer
 
-        // Логируем входящий путь для диагностики
         print("BackgroundVideo: Received path: \(path), useWindow: \(useWindow)")
 
-        // Сделать WebView и контейнер прозрачными, чтобы видео было видно под ним
+        // Ensure transparency of the app surfaces so the video behind is visible
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
             if let webView = self.bridge?.webView {
                 webView.isOpaque = false
                 webView.backgroundColor = .clear
                 webView.scrollView.backgroundColor = .clear
-                print("BackgroundVideo: Made WKWebView transparent")
+                webView.scrollView.layer.backgroundColor = UIColor.clear.cgColor
+                if #available(iOS 15.0, *) {
+                    webView.underPageBackgroundColor = .clear
+                }
+                print("BackgroundVideo: Made WKWebView transparent (incl. underPageBackgroundColor if available)")
             }
             if let vc = self.bridge?.viewController {
+                vc.view.isOpaque = false
                 vc.view.backgroundColor = .clear
+                vc.view.layer.backgroundColor = UIColor.clear.cgColor
                 print("BackgroundVideo: Made root VC background clear")
             }
             if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
                let window = windowScene.windows.first {
                 window.backgroundColor = .clear
+                window.isOpaque = false
+                window.layer.backgroundColor = UIColor.clear.cgColor
                 print("BackgroundVideo: Made main window background clear")
             }
         }
 
-        // Проверяем, является ли путь полным URL или файловым путем
         if path.hasPrefix("http://") || path.hasPrefix("https://") {
             print("BackgroundVideo: Using HTTP URL: \(path)")
             implementation.playVideo(path: path, useWindow: useWindow)
