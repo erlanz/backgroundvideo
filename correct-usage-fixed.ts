@@ -11,10 +11,10 @@ export class OnboardingPage {
 
   async startVideo() {
     try {
-      // ✅ Используем отдельное окно для лучшей видимости
+      // ✅ Метод 1: Отдельное окно (рекомендуется)
       await BackgroundVideo.playVideo({ 
         path: 'intro',
-        useWindow: true // По умолчанию true, но можно явно указать
+        useWindow: true // Видео в отдельном окне, не мешает UI
       });
       console.log('✅ Видео запущено в отдельном окне!');
     } catch (error) {
@@ -24,10 +24,10 @@ export class OnboardingPage {
 
   async startVideoInLayer() {
     try {
-      // Альтернативный способ - добавление на root view controller
+      // ✅ Метод 2: Слой в основном окне (альтернатива)
       await BackgroundVideo.playVideo({ 
         path: 'intro',
-        useWindow: false
+        useWindow: false // Видео как слой в основном окне
       });
       console.log('✅ Видео запущено в слое!');
     } catch (error) {
@@ -65,20 +65,40 @@ export class OnboardingPage {
 }
 */
 
-// 📋 CSS для правильного отображения:
+// 📋 ОБЯЗАТЕЛЬНЫЙ CSS для правильного отображения:
 
 /*
+// В вашем .scss файле:
+
 .onboarding-page {
   --background: transparent;
+  position: relative;
+  z-index: 1;
 }
 
 .overlay-content {
   position: relative;
-  z-index: 1; // Важно! Должен быть больше 0
+  z-index: 10; // Высокий z-index для контента
   text-align: center;
   padding: 2rem;
-  background: rgba(255, 255, 255, 0.9); // Полупрозрачный фон
+  background: rgba(255, 255, 255, 0.95); // Полупрозрачный фон
   border-radius: 16px;
   margin: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+ion-button {
+  position: relative;
+  z-index: 20; // Самый высокий z-index для кнопок
+  --background: #007bff;
+  --color: white;
+}
+
+h1 {
+  position: relative;
+  z-index: 15;
+  color: #333;
+  font-weight: bold;
 }
 */

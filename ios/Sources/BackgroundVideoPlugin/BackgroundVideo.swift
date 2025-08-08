@@ -74,7 +74,7 @@ import UIKit
                     }
                     
                     // Устанавливаем z-position для слоя (отрицательное значение = за контентом)
-                    layer.zPosition = -1000
+                    layer.zPosition = -1
                     print("BackgroundVideo: Set layer z-position to: \(layer.zPosition)")
                     
                     // Вставляем слой на задний план (индекс 0)
@@ -128,12 +128,15 @@ import UIKit
         
         // Создаем новое окно
         let videoWindow = UIWindow(frame: UIScreen.main.bounds)
-        videoWindow.windowLevel = UIWindow.Level.alert - 1 // Чуть ниже alert окон
+        videoWindow.windowLevel = UIWindow.Level.normal - 1 // Ниже нормального уровня
         videoWindow.backgroundColor = UIColor.clear
+        videoWindow.isUserInteractionEnabled = false // Отключаем взаимодействие с окном
+        videoWindow.isMultipleTouchEnabled = false
         
         // Создаем view controller для окна
         let videoViewController = UIViewController()
         videoViewController.view.backgroundColor = UIColor.clear
+        videoViewController.view.isUserInteractionEnabled = false // Отключаем взаимодействие с view
         
         // Устанавливаем размер слоя
         layer.frame = videoViewController.view.bounds

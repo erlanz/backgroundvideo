@@ -1,0 +1,72 @@
+// ✅ ПРАВИЛЬНЫЙ CSS ДЛЯ ВИДЕО НА ЗАДНЕМ ПЛАНЕ
+
+// Основная страница
+.onboarding-page {
+  --background: transparent; // Прозрачный фон
+  position: relative;
+  z-index: 1; // Основной контент выше видео
+}
+
+// Контейнер с контентом
+.overlay-content {
+  position: relative;
+  z-index: 10; // Высокий z-index для контента
+  text-align: center;
+  padding: 2rem;
+  background: rgba(255, 255, 255, 0.95); // Полупрозрачный белый фон
+  border-radius: 16px;
+  margin: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); // Тень для лучшей видимости
+  backdrop-filter: blur(10px); // Размытие фона
+}
+
+// Кнопки должны быть поверх всего
+ion-button {
+  position: relative;
+  z-index: 20; // Самый высокий z-index
+  --background: #007bff;
+  --color: white;
+  --border-radius: 8px;
+  --padding-start: 2rem;
+  --padding-end: 2rem;
+  --padding-top: 1rem;
+  --padding-bottom: 1rem;
+}
+
+// Заголовок
+h1 {
+  position: relative;
+  z-index: 15;
+  color: #333;
+  font-weight: bold;
+  margin-bottom: 2rem;
+}
+
+// Альтернативный вариант с темным фоном
+.overlay-content.dark {
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  
+  h1 {
+    color: white;
+  }
+  
+  ion-button {
+    --background: #28a745;
+  }
+}
+
+// Для отладки - можно временно добавить границы
+.debug-layers {
+  .onboarding-page {
+    border: 2px solid red;
+  }
+  
+  .overlay-content {
+    border: 2px solid blue;
+  }
+  
+  ion-button {
+    border: 2px solid green;
+  }
+}
