@@ -32,7 +32,7 @@ var capacitorBackgroundVideo = (function (exports, core) {
             this.plugin = BackgroundVideo;
         }
         async playVideo(options) {
-            let { path, useWindow = true } = options;
+            let { path, useWindow = false } = options; // по умолчанию слой внутри основного окна
             // Transform assets/ paths to HTTP URLs for Capacitor web server
             if (path.startsWith('assets/')) {
                 const origin = window.location.origin;
