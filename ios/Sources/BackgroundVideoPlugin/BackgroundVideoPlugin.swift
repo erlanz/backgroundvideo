@@ -21,15 +21,16 @@ public class BackgroundVideoPlugin: CAPPlugin, CAPBridgedPlugin {
 
     @objc func playVideo(_ call: CAPPluginCall) {
         let path = call.getString("path") ?? "intro"
+        let useWindow = call.getBool("useWindow") ?? true // По умолчанию используем окно
         
         // Логируем входящий путь для диагностики
-        print("BackgroundVideo: Received path: \(path)")
+        print("BackgroundVideo: Received path: \(path), useWindow: \(useWindow)")
         
         // Проверяем, является ли путь полным URL или файловым путем
         if path.hasPrefix("http://") || path.hasPrefix("https://") {
             // Это HTTP URL - передаем напрямую
             print("BackgroundVideo: Using HTTP URL: \(path)")
-            implementation.playVideo(path: path)
+            implementation.playVideo(path: path, useWindow: useWindow)
             call.resolve()
             return
         }
@@ -38,7 +39,7 @@ public class BackgroundVideoPlugin: CAPPlugin, CAPBridgedPlugin {
         if path.hasPrefix("/") {
             // Это полный путь к файлу - передаем напрямую
             print("BackgroundVideo: Using full file path: \(path)")
-            implementation.playVideo(path: path)
+            implementation.playVideo(path: path, useWindow: useWindow)
             call.resolve()
             return
         }
@@ -61,7 +62,7 @@ public class BackgroundVideoPlugin: CAPPlugin, CAPBridgedPlugin {
         if let url = foundURL {
             // Ресурс найден - передаем путь к файлу
             print("BackgroundVideo: Using bundle resource: \(url.path)")
-            implementation.playVideo(path: url.path)
+            implementation.playVideo(path: url.path, useWindow: useWindow)
             call.resolve()
         } else {
             // Ресурс не найден - возвращаем ошибку с подробной информацией

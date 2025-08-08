@@ -35,13 +35,13 @@ class BackgroundVideoWrapper {
         this.plugin = BackgroundVideo;
     }
     async playVideo(options) {
-        let { path } = options;
+        let { path, useWindow = true } = options;
         // Transform assets/ paths to HTTP URLs for Capacitor web server
         if (path.startsWith('assets/')) {
             const origin = window.location.origin;
             path = `${origin}/${path}`;
         }
-        return this.plugin.playVideo({ path });
+        return this.plugin.playVideo({ path, useWindow });
     }
     async pauseVideo() {
         return this.plugin.pauseVideo();

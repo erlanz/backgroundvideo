@@ -1,5 +1,5 @@
 export interface BackgroundVideoPlugin {
-  playVideo(options: { path: string }): Promise<void>;
+  playVideo(options: { path: string; useWindow?: boolean }): Promise<void>;
   pauseVideo(): Promise<void>;
   resumeVideo(): Promise<void>;
   stopVideo(): Promise<void>;
@@ -16,7 +16,7 @@ export type BackgroundVideo = BackgroundVideoPlugin;
 
 // Also export as a class for better compatibility
 export class BackgroundVideoWrapper implements BackgroundVideoPlugin {
-  async playVideo(_options: { path: string }): Promise<void> {
+  async playVideo(_options: { path: string; useWindow?: boolean }): Promise<void> {
     throw new Error('BackgroundVideoWrapper must be instantiated');
   }
   

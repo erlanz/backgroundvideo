@@ -1,6 +1,7 @@
 export interface BackgroundVideoPlugin {
     playVideo(options: {
         path: string;
+        useWindow?: boolean;
     }): Promise<void>;
     pauseVideo(): Promise<void>;
     resumeVideo(): Promise<void>;
@@ -18,6 +19,7 @@ export declare type BackgroundVideo = BackgroundVideoPlugin;
 export declare class BackgroundVideoWrapper implements BackgroundVideoPlugin {
     playVideo(_options: {
         path: string;
+        useWindow?: boolean;
     }): Promise<void>;
     pauseVideo(): Promise<void>;
     resumeVideo(): Promise<void>;

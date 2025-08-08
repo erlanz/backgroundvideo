@@ -3,6 +3,7 @@ declare class BackgroundVideoWrapper implements BackgroundVideoPlugin {
     private plugin;
     playVideo(options: {
         path: string;
+        useWindow?: boolean;
     }): Promise<void>;
     pauseVideo(): Promise<void>;
     resumeVideo(): Promise<void>;
