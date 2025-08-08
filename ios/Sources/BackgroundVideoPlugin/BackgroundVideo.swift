@@ -5,6 +5,7 @@ import UIKit
 @objc public class BackgroundVideo: NSObject {
     private var player: AVPlayer?
     private var playerLayer: AVPlayerLayer?
+    private var videoWindow: UIWindow?
     
     @objc public func playVideo(path: String) {
         guard !path.isEmpty else {
@@ -47,33 +48,104 @@ import UIKit
         // Настройка слоя с видео
         playerLayer = AVPlayerLayer(player: player)
         playerLayer?.videoGravity = .resizeAspectFill // Масштабирование на весь экран
-        playerLayer?.frame = UIScreen.main.bounds
         
         // Добавляем слой на основной view контроллер
         DispatchQueue.main.async { [weak self] in
             guard let self = self, let layer = self.playerLayer else { return }
             
-            // Получаем основной view контроллер
+            // Метод 1: Попробуем добавить на root view controller
             if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
                let window = windowScene.windows.first,
                let rootViewController = window.rootViewController {
                 
-                // Вставляем слой на задний план
+                // Устанавливаем размер слоя
+                layer.frame = rootViewController.view.bounds
+                print("BackgroundVideo: Layer frame set to: \(layer.frame)")
+                
+                // Удаляем предыдущий слой если есть
+                if let existingLayer = rootViewController.view.layer.sublayers?.first(where: { $0 is AVPlayerLayer }) {
+                    existingLayer.removeFromSuperlayer()
+                    print("BackgroundVideo: Removed existing video layer")
+                }
+                
+                // Вставляем слой на задний план (индекс 0)
                 rootViewController.view.layer.insertSublayer(layer, at: 0)
+                print("BackgroundVideo: Video layer inserted at index 0")
+                
+                // Убеждаемся что слой видим
+                layer.isHidden = false
+                layer.opacity = 1.0
                 
                 // Запускаем воспроизведение
                 self.player?.play()
                 print("BackgroundVideo: Video started playing")
                 
                 // Подписываемся на окончание воспроизведения для зацикливания
+                NotificationCenter.default.removeObserver(self, name: .AVPlayerItemDidPlayToEndTime, object: nil)
                 NotificationCenter.default.addObserver(
                     self,
                     selector: #selector(self.playerDidReachEnd),
                     name: .AVPlayerItemDidPlayToEndTime,
                     object: self.player?.currentItem
                 )
+                
+                // Добавляем наблюдатель за изменением размера экрана
+                NotificationCenter.default.addObserver(
+                    self,
+                    selector: #selector(self.orientationChanged),
+                    name: UIDevice.orientationDidChangeNotification,
+                    object: nil
+                )
+                
+                print("BackgroundVideo: Video setup completed successfully")
+            } else {
+                print("BackgroundVideo: Failed to get root view controller, trying alternative method")
+                self.setupVideoWindow(layer: layer)
             }
         }
+    }
+    
+    private func setupVideoWindow(layer: AVPlayerLayer) {
+        // Метод 2: Создаем отдельное окно для видео
+        print("BackgroundVideo: Setting up video window")
+        
+        // Создаем новое окно
+        let videoWindow = UIWindow(frame: UIScreen.main.bounds)
+        videoWindow.windowLevel = UIWindow.Level.alert - 1 // Чуть ниже alert окон
+        videoWindow.backgroundColor = UIColor.clear
+        
+        // Создаем view controller для окна
+        let videoViewController = UIViewController()
+        videoViewController.view.backgroundColor = UIColor.clear
+        
+        // Устанавливаем размер слоя
+        layer.frame = videoViewController.view.bounds
+        
+        // Добавляем слой на view controller
+        videoViewController.view.layer.addSublayer(layer)
+        
+        // Устанавливаем view controller как root для окна
+        videoWindow.rootViewController = videoViewController
+        
+        // Показываем окно
+        videoWindow.isHidden = false
+        videoWindow.makeKeyAndVisible()
+        
+        // Сохраняем ссылку на окно
+        self.videoWindow = videoWindow
+        
+        // Запускаем воспроизведение
+        self.player?.play()
+        print("BackgroundVideo: Video started playing in separate window")
+        
+        // Подписываемся на окончание воспроизведения для зацикливания
+        NotificationCenter.default.removeObserver(self, name: .AVPlayerItemDidPlayToEndTime, object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(self.playerDidReachEnd),
+            name: .AVPlayerItemDidPlayToEndTime,
+            object: self.player?.currentItem
+        )
     }
     
     @objc public func pauseVideo() {
@@ -88,12 +160,38 @@ import UIKit
     
     @objc public func stopVideo() {
         player?.pause()
+        
+        // Удаляем слой
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            
+            // Удаляем из root view controller
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let window = windowScene.windows.first,
+               let rootViewController = window.rootViewController {
+                
+                // Удаляем слой видео
+                if let existingLayer = rootViewController.view.layer.sublayers?.first(where: { $0 is AVPlayerLayer }) {
+                    existingLayer.removeFromSuperlayer()
+                    print("BackgroundVideo: Video layer removed from root view controller")
+                }
+            }
+            
+            // Удаляем отдельное окно если есть
+            if let videoWindow = self.videoWindow {
+                videoWindow.isHidden = true
+                self.videoWindow = nil
+                print("BackgroundVideo: Video window removed")
+            }
+        }
+        
         playerLayer?.removeFromSuperlayer()
         playerLayer = nil
         player = nil
         
-        // Удаляем наблюдатель
+        // Удаляем наблюдатели
         NotificationCenter.default.removeObserver(self, name: .AVPlayerItemDidPlayToEndTime, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIDevice.orientationDidChangeNotification, object: nil)
         print("BackgroundVideo: Video stopped")
     }
     
@@ -107,5 +205,28 @@ import UIKit
         player?.seek(to: CMTime.zero)
         player?.play()
         print("BackgroundVideo: Video looped")
+    }
+    
+    // Обработчик изменения ориентации экрана
+    @objc private func orientationChanged() {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self, let layer = self.playerLayer else { return }
+            
+            // Обновляем размер в root view controller
+            if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+               let window = windowScene.windows.first,
+               let rootViewController = window.rootViewController {
+                
+                layer.frame = rootViewController.view.bounds
+                print("BackgroundVideo: Layer frame updated for orientation change: \(layer.frame)")
+            }
+            
+            // Обновляем размер в отдельном окне
+            if let videoWindow = self.videoWindow {
+                videoWindow.frame = UIScreen.main.bounds
+                layer.frame = videoWindow.rootViewController?.view.bounds ?? UIScreen.main.bounds
+                print("BackgroundVideo: Video window frame updated for orientation change")
+            }
+        }
     }
 }
